@@ -13,7 +13,7 @@ class _TableDataState extends State<TableData> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: SupabaseDataBaseData().getName(),
+        future: SupabaseDataBaseData().userPlots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

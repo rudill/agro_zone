@@ -1,21 +1,68 @@
 import 'package:agro_zone/services/polygon_decoder.dart';
+import 'package:agro_zone/supabase/dbdata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-class MapView extends StatelessWidget {
+class MapView extends StatefulWidget {
   const MapView({super.key});
 
+  @override
+  State<MapView> createState() => _MapViewState();
+}
+
+class _MapViewState extends State<MapView> {
   @override
   Widget build(BuildContext context) {
     final polygonPoints = PolygonDecoder().decodePolygon();
     return Scaffold(
+      drawer: Drawer(
+        child: FutureBuilder(
+          future: SupabaseDataBaseData().userPlots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+            if (!snapshot.hasData || (snapshot.data as List).isEmpty) {
+              return const Center(child: Text('No data found.'));
+            }
+            final data = snapshot.data as List;
+            return ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                DrawerHeader(
+                  decoration: BoxDecoration(color: Colors.blue),
+                  child: Text(
+                    'Agro Zone',
+                    style: TextStyle(color: Colors.white, fontSize: 24),
+                  ),
+                ),
+                ...data.map<Widget>(
+                  (item) => ListTile(
+                    title: Text(item['name'].toString()),
+                    onTap: () {
+                      final firstPolygonGeoJson = item['the_geom'];
+                      PolygonDecoder().decodePloygonFromDataBase(
+                        firstPolygonGeoJson,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
       appBar: AppBar(title: const Text('Map View')),
       body: FlutterMap(
         options: const MapOptions(
           initialCenter: LatLng(7.8731, 80.7718),
           initialZoom: 7,
         ),
+
         children: [
           TileLayer(
             urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',

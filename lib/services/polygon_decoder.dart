@@ -34,4 +34,12 @@ class PolygonDecoder {
         .map<LatLng>((coord) => LatLng(coord[1], coord[0]))
         .toList();
   }
+
+  List<LatLng> decodePloygonFromDataBase(dynamic geometryData) {
+    Map<String, dynamic> geoJson = jsonDecode(geometryData);
+    final coordinates = geoJson['coordinates'][0];
+    final polygonPoints =
+        coordinates.map<LatLng>((coord) => LatLng(coord[1], coord[0])).toList();
+    return polygonPoints;
+  }
 }
