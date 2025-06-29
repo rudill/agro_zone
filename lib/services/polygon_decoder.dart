@@ -35,7 +35,7 @@ class PolygonDecoder {
         .toList();
   }
 
-  List<LatLng> decodePloygonFromDataBase(dynamic geometryData) {
+  List<LatLng> decodePloygonFromDataBase(geometryData) {
     Map<String, dynamic> geoJson = jsonDecode(geometryData);
     final coordinates = geoJson['coordinates'][0];
     final polygonPoints =

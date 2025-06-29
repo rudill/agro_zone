@@ -1,3 +1,4 @@
+import 'package:agro_zone/models/geo_data.dart';
 import 'package:agro_zone/services/polygon_decoder.dart';
 import 'package:agro_zone/supabase/dbdata.dart';
 import 'package:flutter/material.dart';
@@ -43,11 +44,12 @@ class _MapViewState extends State<MapView> {
                 ...data.map<Widget>(
                   (item) => ListTile(
                     title: Text(item['name'].toString()),
-                    onTap: () {
-                      final firstPolygonGeoJson = item['the_geom'];
-                      PolygonDecoder().decodePloygonFromDataBase(
-                        firstPolygonGeoJson,
-                      );
+                    onTap: () async {
+                      final geometryData = await SupabaseDataBaseData()
+                          .getGeometryData(item['id'].toString());
+                      final coordinates = PolygonDecoder()
+                          .decodePloygonFromDataBase(geometryData);
+                      GeoData().setCoordinates = coordinates;
                     },
                   ),
                 ),
