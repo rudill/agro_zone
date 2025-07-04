@@ -1,16 +1,11 @@
-import 'package:latlong2/latlong.dart';
-
 class GeoData {
-  List<LatLng> coordinates;
+  String? coordData;
 
-  GeoData([this.coordinates = const []]);
+  setData(String coodata) {
+    coordData = coodata;
+  }
 
-  List<LatLng> get getCoordinates => coordinates;
-
-  set setCoordinates(List<LatLng> newCoordinates) {
-    if (newCoordinates.isNotEmpty) {
-      coordinates.clear();
-      coordinates.addAll(newCoordinates);
-    }
+  String? getGeoCoords() {
+    return coordData;
   }
 }

@@ -13,7 +13,7 @@ class SupabaseDataBaseData {
         .from('user_plots_new')
         .select('ST_AsGeoJSON(the_geom) as the_geom')
         .eq('id', id);
-    final data = response.isNotEmpty ? response[0]['the_geom'] : null;
+    final data = response.isNotEmpty ? response : 'no id';
     return data;
   }
 }

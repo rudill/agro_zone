@@ -15,7 +15,8 @@ class MapView extends StatefulWidget {
 class _MapViewState extends State<MapView> {
   @override
   Widget build(BuildContext context) {
-    final polygonPoints = PolygonDecoder().decodePolygon();
+    final geoData = GeoData();
+
     return Scaffold(
       drawer: Drawer(
         child: FutureBuilder(
@@ -45,11 +46,17 @@ class _MapViewState extends State<MapView> {
                   (item) => ListTile(
                     title: Text(item['name'].toString()),
                     onTap: () async {
-                      final geometryData = await SupabaseDataBaseData()
-                          .getGeometryData(item['id'].toString());
-                      final coordinates = PolygonDecoder()
-                          .decodePloygonFromDataBase(geometryData);
-                      GeoData().setCoordinates = coordinates;
+                      // final geometryData = await SupabaseDataBaseData()
+                      //     .getGeometryData(item['id'].toString());
+                      // final coordinates = PolygonDecoder()
+                      //     .decodePloygonFromDataBase(geometryData);
+                      // GeoData().setCoordinates = coordinates;
+                      //print(item['the_geom'].toString());
+                      //PolygonDecoder(coords: item['the_geom'].toString());
+                      //GeoData(coordData: item['the_geom'].toString());
+                      geoData.setData(item['the_geom'].toString());
+
+                      print(geoData.getGeoCoords());
                     },
                   ),
                 ),
@@ -70,16 +77,18 @@ class _MapViewState extends State<MapView> {
             urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             subdomains: const ['a', 'b', 'c'],
           ),
-          PolygonLayer(
-            polygons: [
-              Polygon(
-                points: polygonPoints,
-                color: Colors.blue.withOpacity(0.3),
-                borderStrokeWidth: 2,
-                borderColor: Colors.blue,
-              ),
-            ],
-          ),
+          // PolygonLayer(
+          //   polygons: [
+          //     Polygon(
+          //       points: PolygonDecoder().decodePloygonFromDataBase(
+          //         geoData.getGeoCoords(),
+          //       ),
+          //       color: Colors.blue.withOpacity(0.3),
+          //       borderStrokeWidth: 2,
+          //       borderColor: Colors.blue,
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );
