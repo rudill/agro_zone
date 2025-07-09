@@ -13,11 +13,42 @@ class MapView extends StatefulWidget {
 }
 
 class _MapViewState extends State<MapView> {
+  List<LatLng> selectedPolygon = [];
+
+  @override
+  void initState() {
+    super.initState();
+    selectedPolygon = PolygonDecoder().decodePolygon();
+  }
+
   @override
   Widget build(BuildContext context) {
     final geoData = GeoData();
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          // Add your onPressed code here!
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Coordinates'),
+                content: Text(geoData.getGeoCoords() ?? 'No coordinates set'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Close'),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
       drawer: Drawer(
         child: FutureBuilder(
           future: SupabaseDataBaseData().userPlots(),
@@ -46,15 +77,15 @@ class _MapViewState extends State<MapView> {
                   (item) => ListTile(
                     title: Text(item['name'].toString()),
                     onTap: () async {
-                      // final geometryData = await SupabaseDataBaseData()
-                      //     .getGeometryData(item['id'].toString());
-                      // final coordinates = PolygonDecoder()
-                      //     .decodePloygonFromDataBase(geometryData);
-                      // GeoData().setCoordinates = coordinates;
-                      //print(item['the_geom'].toString());
-                      //PolygonDecoder(coords: item['the_geom'].toString());
-                      //GeoData(coordData: item['the_geom'].toString());
                       geoData.setData(item['the_geom'].toString());
+
+                      final coords = PolygonDecoder().decodePloygonFromDataBase(
+                        item['the_geom'],
+                      );
+                      setState(() {
+                        selectedPolygon = coords;
+                      });
+                      Navigator.pop(context);
 
                       print(geoData.getGeoCoords());
                     },
@@ -77,18 +108,16 @@ class _MapViewState extends State<MapView> {
             urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             subdomains: const ['a', 'b', 'c'],
           ),
-          // PolygonLayer(
-          //   polygons: [
-          //     Polygon(
-          //       points: PolygonDecoder().decodePloygonFromDataBase(
-          //         geoData.getGeoCoords(),
-          //       ),
-          //       color: Colors.blue.withOpacity(0.3),
-          //       borderStrokeWidth: 2,
-          //       borderColor: Colors.blue,
-          //     ),
-          //   ],
-          // ),
+          PolygonLayer(
+            polygons: [
+              Polygon(
+                points: selectedPolygon,
+                color: Colors.blue.withOpacity(0.3),
+                borderStrokeWidth: 2,
+                borderColor: Colors.blue,
+              ),
+            ],
+          ),
         ],
       ),
     );
