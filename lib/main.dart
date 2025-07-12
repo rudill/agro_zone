@@ -1,5 +1,4 @@
 import 'package:agro_zone/screens/map_view.dart';
-import 'package:agro_zone/screens/table_data.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

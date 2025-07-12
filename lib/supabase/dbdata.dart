@@ -16,10 +16,11 @@ class SupabaseDataBaseData {
     final data = response.isNotEmpty ? response : 'no id';
     return data;
   }
-  // Future insertGeometryData(Map<String, dynamic> geometryData) async {
-  //   final response = await supabase.from('user_plots_new').insert(geometryData);
-  //   return response;
-  // }
+
+  Future insertGeometryData(Map<String, dynamic> geometryData) async {
+    final response = await supabase.from('user_plots_new').insert(geometryData);
+    return response;
+  }
 
   //   Future insertUserPlots() async {
   //     await supabase

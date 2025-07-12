@@ -13,6 +13,11 @@ class MapView extends StatefulWidget {
 }
 
 class _MapViewState extends State<MapView> {
+  TextEditingController plotNameController = TextEditingController();
+  TextEditingController cropTypeController = TextEditingController();
+  TextEditingController notesController = TextEditingController();
+  TextEditingController geometryController = TextEditingController();
+
   List<LatLng> selectedPolygon = [];
 
   @override
@@ -29,19 +34,37 @@ class _MapViewState extends State<MapView> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          // Add your onPressed code here!
+          //show dialog to add new plot
           showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: const Text('Coordinates'),
-                content: Text(geoData.getGeoCoords() ?? 'No coordinates set'),
+                title: Text('Add New Plot'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    buildTextFields(plotNameController, 'Plot Name'),
+                    SizedBox(height: 10),
+                    buildTextFields(cropTypeController, 'Crop Type'),
+                    SizedBox(height: 10),
+                    buildTextFields(notesController, 'Notes'),
+                    SizedBox(height: 10),
+                    buildTextFields(geometryController, 'Geometry Data'),
+                  ],
+                ),
                 actions: [
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      Navigator.pop(context);
                     },
-                    child: const Text('Close'),
+                    child: Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Handle adding new plot
+                      Navigator.pop(context);
+                    },
+                    child: Text('Add'),
                   ),
                 ],
               );
@@ -119,6 +142,16 @@ class _MapViewState extends State<MapView> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget buildTextFields(TextEditingController controller, String hintText) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        hintText: hintText,
+        border: OutlineInputBorder(),
       ),
     );
   }
