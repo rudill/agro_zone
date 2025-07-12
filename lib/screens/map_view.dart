@@ -1,4 +1,5 @@
 import 'package:agro_zone/models/geo_data.dart';
+import 'package:agro_zone/models/user_plot_data.dart';
 import 'package:agro_zone/services/polygon_decoder.dart';
 import 'package:agro_zone/supabase/dbdata.dart';
 import 'package:flutter/material.dart';
@@ -60,9 +61,23 @@ class _MapViewState extends State<MapView> {
                     child: Text('Cancel'),
                   ),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       // Handle adding new plot
-                      Navigator.pop(context);
+                      try {
+                        final newPlot = UserPlotData(
+                          name: plotNameController.text,
+                          cropType: cropTypeController.text,
+                          notes: notesController.text,
+                          geometry: geometryController.text,
+                        );
+
+                        await SupabaseDataBaseData().insertGeometryData(
+                          newPlot,
+                        );
+                        Navigator.pop(context);
+                      } catch (e) {
+                        print('Error: $e');
+                      }
                     },
                     child: Text('Add'),
                   ),

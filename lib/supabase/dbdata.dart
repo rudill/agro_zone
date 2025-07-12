@@ -1,3 +1,4 @@
+import 'package:agro_zone/models/user_plot_data.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseDataBaseData {
@@ -17,8 +18,10 @@ class SupabaseDataBaseData {
     return data;
   }
 
-  Future insertGeometryData(Map<String, dynamic> geometryData) async {
-    final response = await supabase.from('user_plots_new').insert(geometryData);
+  Future insertGeometryData(UserPlotData userPlotData) async {
+    final response = await supabase
+        .from('user_plots_new')
+        .insert(userPlotData.toJson());
     return response;
   }
 
