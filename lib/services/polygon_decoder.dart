@@ -42,4 +42,13 @@ class PolygonDecoder {
         coordinates.map<LatLng>((coord) => LatLng(coord[1], coord[0])).toList();
     return polygonPoints;
   }
+
+  String polygonToGeoJson(List<LatLng> points) {
+    final coords = points.map((p) => [p.longitude, p.latitude]).toList();
+    // Ensure the polygon is closed
+    if (coords.isNotEmpty && coords.first != coords.last) {
+      coords.add(coords.first);
+    }
+    return '{"type":"Polygon","coordinates":[${coords.toString()}]}';
+  }
 }
