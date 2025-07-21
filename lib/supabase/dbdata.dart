@@ -25,13 +25,16 @@ class SupabaseDataBaseData {
     return response;
   }
 
-  //   Future insertUserPlots() async {
-  //     await supabase
-  //     .from('user_plots_new')
-  //     .insert({
-  //       'name':'ruvi',
-  //       'crop_type':'apple',
-  //       'notes':'Drawn from GeoJSON'
-  //     })
-  //   }
+  // Future insertUserPlots() async {
+  //   await supabase.rpc(
+  //     'insert_user_plots',
+  //     params: {
+  //       'name': 'Test Plot',
+  //       'crop_type': 'Rice',
+  //       'notes': 'Test notes',
+  //       'geometry':
+  //           '{"type":"Polygon","coordinates":[[[80.99926699825852,7.942971679180758],[80.99724899198571,7.93715279598193],[81.00621507048334,7.93715279598193],[81.00414597544506,7.943123475029964],[80.99926699825852,7.942971679180758]]]}',
+  //     },
+  //   );
+  // }
 }
