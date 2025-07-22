@@ -18,12 +18,12 @@ class _MapViewState extends State<MapView> {
   TextEditingController plotNameController = TextEditingController();
   TextEditingController cropTypeController = TextEditingController();
   TextEditingController notesController = TextEditingController();
-  TextEditingController geometryController = TextEditingController();
 
   List<LatLng> selectedPolygon = [];
   List<LatLng> drawingPolygon = [];
 
   bool isDrawing = false;
+  dynamic polygonData;
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _MapViewState extends State<MapView> {
               setState(() {
                 isDrawing = !isDrawing;
                 if (isDrawing && drawingPolygon.isNotEmpty) {
-                  final geoJson = PolygonDecoder().polygonToGeoJson(
+                  polygonData = PolygonDecoder().polygonToGeoJson(
                     drawingPolygon,
                   );
                   //show using alert
@@ -55,7 +55,7 @@ class _MapViewState extends State<MapView> {
                     builder: (context) {
                       return AlertDialog(
                         title: Text('Geometry Data'),
-                        content: Text(geoJson),
+                        content: Text(polygonData),
                         actions: [
                           TextButton(
                             onPressed: () {
@@ -102,7 +102,6 @@ class _MapViewState extends State<MapView> {
                         SizedBox(height: 10),
                         buildTextFields(notesController, 'Notes'),
                         SizedBox(height: 10),
-                        buildTextFields(geometryController, 'Geometry Data'),
                       ],
                     ),
                     actions: [
@@ -116,16 +115,22 @@ class _MapViewState extends State<MapView> {
                         onPressed: () async {
                           // Handle adding new plot
                           try {
+                            // final geometryData = PolygonDecoder()
+                            //     .polygonToGeoJson(drawingPolygon);
                             final newPlot = UserPlotData(
                               name: plotNameController.text,
                               cropType: cropTypeController.text,
                               notes: notesController.text,
-                              geometry: geometryController.text,
+                              geometry: polygonData,
                             );
 
-                            await SupabaseDataBaseData().insertGeometryData(
+                            await SupabaseDataBaseData().insertUserPlots(
                               newPlot,
                             );
+                            print('name: ${plotNameController.text}');
+                            print('cropType: ${cropTypeController.text}');
+                            print('notes: ${notesController.text}');
+                            print('geometry: $polygonData');
                             // ignore: use_build_context_synchronously
                             Navigator.pop(context);
                           } catch (e) {

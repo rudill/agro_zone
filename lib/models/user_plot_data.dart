@@ -29,7 +29,7 @@ class UserPlotData {
       'name': name,
       'crop_type': cropType,
       'notes': notes,
-      'geometry': geometry,
+      'geojson': geometry,
     };
   }
 }
