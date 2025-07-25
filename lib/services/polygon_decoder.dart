@@ -49,6 +49,10 @@ class PolygonDecoder {
     if (coords.isNotEmpty && coords.first != coords.last) {
       coords.add(coords.first);
     }
-    return '{"type":"Polygon","coordinates":[${coords.toString()}]}';
+    final geoJson = {
+      "type": "Polygon",
+      "coordinates": [coords],
+    };
+    return jsonEncode(geoJson);
   }
 }

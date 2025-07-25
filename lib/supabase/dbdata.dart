@@ -1,4 +1,5 @@
 import 'package:agro_zone/models/user_plot_data.dart';
+import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseDataBaseData {
@@ -25,7 +26,19 @@ class SupabaseDataBaseData {
     return response;
   }
 
-  Future insertUserPlots(UserPlotData userPlotData) async {
-    await supabase.rpc('insert_plot', params: userPlotData.toJson());
+  Future insertUserPlots(
+    UserPlotData userPlotData,
+    BuildContext context,
+  ) async {
+    final response = await supabase.rpc(
+      'insert_plot',
+      params: userPlotData.toJson(),
+    );
+    if (response != null && response.error != null) {
+      throw Exception(response.error!.message);
+    }
+    return ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('successfully inserted')));
   }
 }

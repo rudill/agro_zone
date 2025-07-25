@@ -1,9 +1,11 @@
+import 'dart:convert';
+
 class UserPlotData {
   // final String id;
   final String name;
   final String cropType;
   final String notes;
-  final String geometry;
+  final dynamic geometry;
 
   UserPlotData({
     // required this.id,
@@ -29,7 +31,7 @@ class UserPlotData {
       'name': name,
       'crop_type': cropType,
       'notes': notes,
-      'geojson': geometry,
+      'geojson': jsonDecode(geometry), // Assuming geometry is a GeoJSON string
     };
   }
 }

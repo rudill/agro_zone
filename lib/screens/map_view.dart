@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:agro_zone/models/geo_data.dart';
 import 'package:agro_zone/models/user_plot_data.dart';
 import 'package:agro_zone/services/polygon_decoder.dart';
@@ -113,25 +115,31 @@ class _MapViewState extends State<MapView> {
                       ),
                       ElevatedButton(
                         onPressed: () async {
-                          // Handle adding new plot
+                          // Validate all fields
+                          if (plotNameController.text.isEmpty ||
+                              cropTypeController.text.isEmpty ||
+                              notesController.text.isEmpty ||
+                              polygonData == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Please fill all fields and draw a polygon.',
+                                ),
+                              ),
+                            );
+                            return;
+                          }
                           try {
-                            // final geometryData = PolygonDecoder()
-                            //     .polygonToGeoJson(drawingPolygon);
                             final newPlot = UserPlotData(
                               name: plotNameController.text,
                               cropType: cropTypeController.text,
                               notes: notesController.text,
                               geometry: polygonData,
                             );
-
                             await SupabaseDataBaseData().insertUserPlots(
                               newPlot,
+                              context,
                             );
-                            print('name: ${plotNameController.text}');
-                            print('cropType: ${cropTypeController.text}');
-                            print('notes: ${notesController.text}');
-                            print('geometry: $polygonData');
-                            // ignore: use_build_context_synchronously
                             Navigator.pop(context);
                           } catch (e) {
                             print('Error: $e');
