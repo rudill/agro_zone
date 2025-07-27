@@ -178,20 +178,20 @@ class _MapViewState extends State<MapView> {
           ),
           PolygonLayer(
             polygons: [
-              if (drawingPolygon.isNotEmpty)
+              if (drawingPolygon.isNotEmpty && isDrawing)
                 Polygon(
                   points: drawingPolygon,
                   color: Colors.blue.withOpacity(0.3),
                   borderStrokeWidth: 2,
                   borderColor: Colors.blue,
                 ),
-              // Polygon(
-              //   points: selectedPolygon,
-              //   // ignore: deprecated_member_use
-              //   color: Colors.blue.withOpacity(0.3),
-              //   borderStrokeWidth: 2,
-              //   borderColor: Colors.blue,
-              // ),
+              if (selectedPolygon.isNotEmpty && !isDrawing)
+                Polygon(
+                  points: selectedPolygon,
+                  color: Colors.blue.withOpacity(0.3),
+                  borderStrokeWidth: 2,
+                  borderColor: Colors.blue,
+                ),
             ],
           ),
         ],
