@@ -172,7 +172,8 @@ class _MapViewState extends State<MapView> {
 
         children: [
           TileLayer(
-            urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            urlTemplate:
+                'https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.jpg?key=HYucasx0ua8pvSAcQdmW',
             subdomains: const ['a', 'b', 'c'],
           ),
           PolygonLayer(
