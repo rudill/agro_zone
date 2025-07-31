@@ -1,4 +1,4 @@
-import 'package:agro_zone/supabase/dbdata.dart';
+import 'package:agro_zone/supabase/db/dbdata.dart';
 import 'package:flutter/material.dart';
 
 class TableData extends StatefulWidget {

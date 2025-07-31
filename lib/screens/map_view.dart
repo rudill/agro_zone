@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:agro_zone/models/geo_data.dart';
 import 'package:agro_zone/models/user_plot_data.dart';
 import 'package:agro_zone/services/polygon_decoder.dart';
-import 'package:agro_zone/supabase/dbdata.dart';
+import 'package:agro_zone/supabase/db/dbdata.dart';
 import 'package:agro_zone/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
