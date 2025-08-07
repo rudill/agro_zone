@@ -1,4 +1,5 @@
 import 'package:agro_zone/screens/login/login.dart';
+import 'package:agro_zone/supabase/auth/sup_login.dart';
 import 'package:flutter/material.dart';
 
 class Signup extends StatefulWidget {
@@ -177,30 +178,43 @@ class _SignupState extends State<Signup> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    onPressed: () {
-                      // if (_formKey.currentState?.validate() ?? false) {
-                      //   _boxAccounts.put(
-                      //     _controllerUsername.text,
-                      //     _controllerConFirmPassword.text,
-                      //   );
+                    onPressed: () async {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        await SupabaseLogin().login(
+                          _controllerEmail.text,
+                          _controllerPassword.text,
+                          _controllerUsername.text,
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            width: 200,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.secondary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            behavior: SnackBarBehavior.floating,
+                            content: const Text("Registered Successfully"),
+                          ),
+                        );
 
-                      //   ScaffoldMessenger.of(context).showSnackBar(
-                      //     SnackBar(
-                      //       width: 200,
-                      //       backgroundColor:
-                      //           Theme.of(context).colorScheme.secondary,
-                      //       shape: RoundedRectangleBorder(
-                      //         borderRadius: BorderRadius.circular(10),
-                      //       ),
-                      //       behavior: SnackBarBehavior.floating,
-                      //       content: const Text("Registered Successfully"),
-                      //     ),
-                      //   );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            width: 200,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.secondary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            behavior: SnackBarBehavior.floating,
+                            content: const Text("Registered Successfully"),
+                          ),
+                        );
 
-                      //   _formKey.currentState?.reset();
+                        _formKey.currentState?.reset();
 
-                      //   Navigator.pop(context);
-                      // }
+                        // Navigator.pop(context);
+                      }
                     },
                     child: const Text("Register"),
                   ),
