@@ -180,7 +180,7 @@ class _SignupState extends State<Signup> {
                     ),
                     onPressed: () async {
                       if (_formKey.currentState?.validate() ?? false) {
-                        await SupabaseLogin().login(
+                        await SupabaseAuthService().login(
                           _controllerEmail.text,
                           _controllerPassword.text,
                           _controllerUsername.text,

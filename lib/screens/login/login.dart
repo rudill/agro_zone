@@ -1,3 +1,7 @@
+import 'dart:collection';
+
+import 'package:agro_zone/screens/map_view.dart';
+import 'package:agro_zone/supabase/auth/sup_login.dart';
 import 'package:flutter/material.dart';
 
 import 'signup.dart';
@@ -120,19 +124,32 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     onPressed: () {
-                      // if (_formKey.currentState?.validate() ?? false) {
-                      //   _boxLogin.put("loginStatus", true);
-                      //   _boxLogin.put("userName", _controllerUsername.text);
-
-                      //   Navigator.pushReplacement(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: (context) {
-                      //         return Home();
-                      //       },
-                      //     ),
-                      //   );
-                      // }
+                      if (_formKey.currentState?.validate() ?? false) {
+                        // Perform login using SupabaseAuthService
+                        SupabaseAuthService()
+                            .signIn(
+                              _controllerUsername.text,
+                              _controllerPassword.text,
+                            )
+                            .then((user) {
+                              if (user != null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Login successful')),
+                                );
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => MapDisplay(user: user),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Login failed')),
+                                );
+                              }
+                            });
+                      }
                     },
                     child: const Text("Login"),
                   ),

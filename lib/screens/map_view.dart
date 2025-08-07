@@ -8,15 +8,17 @@ import 'package:agro_zone/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class MapView extends StatefulWidget {
-  const MapView({super.key});
+class MapDisplay extends StatefulWidget {
+  final User? user;
+  const MapDisplay({super.key, required this.user});
 
   @override
-  State<MapView> createState() => _MapViewState();
+  State<MapDisplay> createState() => _MapDisplayState();
 }
 
-class _MapViewState extends State<MapView> {
+class _MapDisplayState extends State<MapDisplay> {
   TextEditingController plotNameController = TextEditingController();
   TextEditingController cropTypeController = TextEditingController();
   TextEditingController notesController = TextEditingController();
