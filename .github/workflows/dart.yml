@@ -1,0 +1,47 @@
+name: Dart
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Install Flutter
+    - name: Install Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.29.2'
+
+    # Install Android SDK Commandline Tools
+    - name: Install Android SDK commandline tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget unzip
+        mkdir -p $HOME/android-sdk/cmdline-tools
+        wget -O cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+        unzip cmdline-tools.zip -d $HOME/android-sdk/cmdline-tools
+        mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+        echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+        echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+
+    # Accept Android SDK licenses
+    - name: Accept Android SDK licenses
+      run: yes | sdkmanager --licenses
+
+    # Install dependencies
+    - name: Install dependencies
+      run: flutter pub get
+
+    # Build APK for Android
+    - name: Build APK
+      run: flutter build apk --release
