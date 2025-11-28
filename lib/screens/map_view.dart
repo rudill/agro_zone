@@ -1,10 +1,10 @@
-import 'dart:convert';
-
 import 'package:agro_zone/services/area_calculator.dart';
 
 import 'package:agro_zone/models/geo_data.dart';
 import 'package:agro_zone/models/user_plot_data.dart';
 import 'package:agro_zone/services/polygon_decoder.dart';
+import 'package:agro_zone/screens/login/login.dart';
+import 'package:agro_zone/supabase/auth/sup_login.dart';
 import 'package:agro_zone/supabase/db/dbdata.dart';
 import 'package:agro_zone/widgets/drawer.dart';
 import 'package:flutter/material.dart';
@@ -256,6 +256,20 @@ class _MapDisplayState extends State<MapDisplay> {
                     print(geoData.getGeoCoords());
                   },
                 ),
+              ),
+              Divider(),
+              ListTile(
+                leading: Icon(Icons.logout, color: Colors.red),
+                title: Text('Logout', style: TextStyle(color: Colors.red)),
+                onTap: () async {
+                  await SupabaseAuthService().signOut();
+                  if (context.mounted) {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const Login()),
+                      (route) => false,
+                    );
+                  }
+                },
               ),
             ],
           );
