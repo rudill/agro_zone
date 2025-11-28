@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:agro_zone/services/area_calculator.dart';
+
 import 'package:agro_zone/models/geo_data.dart';
 import 'package:agro_zone/models/user_plot_data.dart';
 import 'package:agro_zone/services/polygon_decoder.dart';
@@ -95,11 +97,22 @@ class _MapDisplayState extends State<MapDisplay> {
               showDialog(
                 context: context,
                 builder: (context) {
+                  // Calculate area
+                  final areaSqM = AreaCalculator.calculateArea(drawingPolygon);
+                  final areaHa = AreaCalculator.toHectares(areaSqM);
+                  final areaAcres = AreaCalculator.toAcres(areaSqM);
+
                   return AlertDialog(
                     title: Text('Add New Plot'),
                     content: Column(
                       mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(
+                          'Area: ${areaHa.toStringAsFixed(2)} ha / ${areaAcres.toStringAsFixed(2)} acres',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 10),
                         buildTextFields(plotNameController, 'Plot Name'),
                         SizedBox(height: 10),
                         buildTextFields(cropTypeController, 'Crop Type'),

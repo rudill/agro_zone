@@ -1,4 +1,5 @@
 import 'package:agro_zone/screens/login/login.dart';
+import 'package:agro_zone/screens/map_view.dart';
 import 'package:agro_zone/supabase/auth/sup_login.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +23,7 @@ class _SignupState extends State<Signup> {
       TextEditingController();
 
   bool _obscurePassword = true;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -178,45 +180,70 @@ class _SignupState extends State<Signup> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    onPressed: () async {
-                      if (_formKey.currentState?.validate() ?? false) {
-                        await SupabaseAuthService().login(
-                          _controllerEmail.text,
-                          _controllerPassword.text,
-                          _controllerUsername.text,
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            width: 200,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.secondary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            behavior: SnackBarBehavior.floating,
-                            content: const Text("Registered Successfully"),
-                          ),
-                        );
+                    onPressed:
+                        _isLoading
+                            ? null
+                            : () async {
+                              if (_formKey.currentState?.validate() ?? false) {
+                                setState(() {
+                                  _isLoading = true;
+                                });
+                                final user = await SupabaseAuthService().login(
+                                  _controllerEmail.text,
+                                  _controllerPassword.text,
+                                  _controllerUsername.text,
+                                );
+                                setState(() {
+                                  _isLoading = false;
+                                });
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            width: 200,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.secondary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            behavior: SnackBarBehavior.floating,
-                            content: const Text("Registered Successfully"),
-                          ),
-                        );
-
-                        _formKey.currentState?.reset();
-
-                        // Navigator.pop(context);
-                      }
-                    },
-                    child: const Text("Register"),
+                                if (user != null) {
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        width: 200,
+                                        backgroundColor:
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.secondary,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        behavior: SnackBarBehavior.floating,
+                                        content: const Text(
+                                          "Registered Successfully",
+                                        ),
+                                      ),
+                                    );
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) => MapDisplay(user: user),
+                                      ),
+                                    );
+                                  }
+                                } else {
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: const Text(
+                                          "Registration Failed. Please try again.",
+                                        ),
+                                        backgroundColor:
+                                            Theme.of(context).colorScheme.error,
+                                      ),
+                                    );
+                                  }
+                                }
+                              }
+                            },
+                    child:
+                        _isLoading
+                            ? const CircularProgressIndicator()
+                            : const Text("Register"),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

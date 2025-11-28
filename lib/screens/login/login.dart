@@ -17,10 +17,11 @@ class _LoginState extends State<Login> {
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   final FocusNode _focusNodePassword = FocusNode();
-  final TextEditingController _controllerUsername = TextEditingController();
+  final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
 
   bool _obscurePassword = true;
+  bool _isLoading = false;
   // final Box _boxLogin = Hive.box("login");
   // final Box _boxAccounts = Hive.box("accounts");
 
@@ -50,11 +51,11 @@ class _LoginState extends State<Login> {
               ),
               const SizedBox(height: 60),
               TextFormField(
-                controller: _controllerUsername,
-                keyboardType: TextInputType.name,
+                controller: _controllerEmail,
+                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  labelText: "Username",
-                  prefixIcon: const Icon(Icons.person_outline),
+                  labelText: "Email",
+                  prefixIcon: const Icon(Icons.email_outlined),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -65,12 +66,8 @@ class _LoginState extends State<Login> {
                 onEditingComplete: () => _focusNodePassword.requestFocus(),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
-                    return "Please enter username.";
+                    return "Please enter email.";
                   }
-                  // else if (!_boxAccounts.containsKey(value)) {
-                  //   return "Username is not registered.";
-                  // }
-
                   return null;
                 },
               ),
@@ -123,35 +120,51 @@ class _LoginState extends State<Login> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    onPressed: () {
-                      if (_formKey.currentState?.validate() ?? false) {
-                        // Perform login using SupabaseAuthService
-                        SupabaseAuthService()
-                            .signIn(
-                              _controllerUsername.text,
-                              _controllerPassword.text,
-                            )
-                            .then((user) {
-                              if (user != null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Login successful')),
+                    onPressed:
+                        _isLoading
+                            ? null
+                            : () async {
+                              if (_formKey.currentState?.validate() ?? false) {
+                                setState(() {
+                                  _isLoading = true;
+                                });
+                                // Perform login using SupabaseAuthService
+                                final user = await SupabaseAuthService().signIn(
+                                  _controllerEmail.text,
+                                  _controllerPassword.text,
                                 );
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => MapDisplay(user: user),
-                                  ),
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Login failed')),
-                                );
+                                setState(() {
+                                  _isLoading = false;
+                                });
+
+                                if (user != null) {
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Login successful'),
+                                      ),
+                                    );
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) => MapDisplay(user: user),
+                                      ),
+                                    );
+                                  }
+                                } else {
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Login failed')),
+                                    );
+                                  }
+                                }
                               }
-                            });
-                      }
-                    },
-                    child: const Text("Login"),
+                            },
+                    child:
+                        _isLoading
+                            ? const CircularProgressIndicator()
+                            : const Text("Login"),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -186,7 +199,7 @@ class _LoginState extends State<Login> {
   @override
   void dispose() {
     _focusNodePassword.dispose();
-    _controllerUsername.dispose();
+    _controllerEmail.dispose();
     _controllerPassword.dispose();
     super.dispose();
   }

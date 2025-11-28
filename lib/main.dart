@@ -1,4 +1,4 @@
-import 'package:agro_zone/screens/login/signup.dart';
+import 'package:agro_zone/screens/login/login.dart';
 import 'package:agro_zone/screens/map_view.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -17,7 +17,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: Signup());
+    final session = Supabase.instance.client.auth.currentSession;
+    return MaterialApp(
+      title: 'Agro Zone',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        useMaterial3: true,
+      ),
+      home: session != null ? MapDisplay(user: session.user) : const Login(),
+    );
   }
 }
 
